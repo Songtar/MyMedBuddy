@@ -1,0 +1,104 @@
+import 'package:flutter/material.dart';
+import '../services/shared_prefs_service.dart';
+
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  String username = '';
+  int age = 0;
+  String condition = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserDetails();
+  }
+
+  Future<void> _loadUserDetails() async {
+    final data = await SharedPrefsService.getUserData();
+    setState(() {
+      username = data['username'];
+      age = data['age'];
+      condition = data['condition'];
+    });
+  }
+
+  void _navigate(String route) {
+    Navigator.pushNamed(context, route);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('MyMedBuddy Dashboard'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: () async {
+              await SharedPrefsService.clearUserData();
+              Navigator.pushReplacementNamed(context, '/onboarding');
+            },
+          )
+        ],
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: ListView(
+          children: [
+            Text(
+              'Welcome back, $username!',
+              style: Theme.of(context).textTheme.headlineSmall,
+            ),
+            const SizedBox(height: 8),
+            Text('Age: $age'),
+            Text('Condition: $condition'),
+            const SizedBox(height: 24),
+            const Text(
+              'Quick Access',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+            ),
+            const SizedBox(height: 12),
+            GridView.count(
+              crossAxisCount: 2,
+              shrinkWrap: true,
+              crossAxisSpacing: 12,
+              mainAxisSpacing: 12,
+              physics: const NeverScrollableScrollPhysics(),
+              children: [
+                _buildCard(Icons.medical_services, 'Medication', '/medication'),
+                _buildCard(Icons.event, 'Appointments', '/appointments'),
+                _buildCard(Icons.book, 'Health Logs', '/logs'),
+                _buildCard(Icons.person, 'Profile', '/profile'),
+              ],
+            ),
+            const SizedBox(height: 24),
+            const Text(
+              'Today\'s Overview',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+            ),
+            const SizedBox(height: 10),
+            const Card(
+              child: ListTile(
+                title: Text('Next Medication'),
+                subtitle: Text('Paracetamol at 2:00 PM'),
+              ),
+            ),
+            const Card(
+              child: ListTile(
+                title: Text('Missed Dose'),
+                subtitle: Text('Vitamin C - Yesterday'),
+              ),
+            ),
+            const Card(
+              child: ListTile(
+                title: Text('Upcoming Appointment'),
+                subtitle: Text('Dentist - July 25, 10:00 AM'),
+              ),
+            ),
+          ]

@@ -1,0 +1,52 @@
+import 'dart:convert';
+import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../models/medication.dart';
+
+class MedicationProvider extends ChangeNotifier {
+  final List<Medication> _medications = [];
+
+  List<Medication> get medications => _medications;
+
+  MedicationProvider() {
+    loadMedications();
+  }
+
+  Future<void> loadMedications() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? data = prefs.getString('medications');
+    if (data != null) {
+      List decoded = jsonDecode(data);
+      _medications.clear();
+      _medications.addAll(decoded.map((e) => Medication.fromJson(e)));
+      notifyListeners();
+    }
+  }
+
+  Future<void> saveMedications() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String data = jsonEncode(_medications.map((e) => e.toJson()).toList());
+    await prefs.setString('medications', data);
+  }
+
+  void addMedication(Medication med) {
+    _medications.add(med);
+    saveMedications();
+    notifyListeners();
+  }
+
+  void toggleTaken(String id) {
+    final index = _medications.indexWhere((m) => m.id == id);
+    if (index != -1) {
+      _medications[index].taken = !_medications[index].taken;
+      saveMedications();
+      notifyListeners();
+    }
+  }
+
+  void deleteMedication(String id) {
+    _medications.removeWhere((m) => m.id == id);
+    saveMedications();
+    notifyListeners();
+  }
+}

@@ -1,0 +1,33 @@
+class Medication {
+  final String id;
+  final String name;
+  final String time;
+  final String dosage;
+  bool taken;
+
+  Medication({
+    required this.id,
+    required this.name,
+    required this.time,
+    required this.dosage,
+    this.taken = false,
+  });
+
+  factory Medication.fromJson(Map<String, dynamic> json) {
+    return Medication(
+      id: json['id'],
+      name: json['name'],
+      time: json['time'],
+      dosage: json['dosage'],
+      taken: json['taken'],
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'name': name,
+    'time': time,
+    'dosage': dosage,
+    'taken': taken,
+  };
+}
