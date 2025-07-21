@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # MyMedBuddy
 
 MyMedBuddy is a Flutter-based health companion app that helps users manage medications, appointments, health logs, and personal preferences. The app features onboarding, persistent user data, dark mode, notifications, and a modern, user-friendly interface.
@@ -128,3 +129,6 @@ test/
 6. **All data and preferences are saved and persist across app restarts.**
 
 
+=======
+# MyMedBuddy
+>>>>>>> 29e8a2c450fc37685c81d776e4244b7b4bba81a7
